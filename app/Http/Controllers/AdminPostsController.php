@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\PostCreateRequest;
 use App\Photo;
 use App\Post;
+use App\Category;
 use Illuminate\Http\Request;
 
 use App\Http\Requests;
@@ -34,7 +35,8 @@ class AdminPostsController extends Controller
         //
         /*$posts=Post::lists('name','id')->all();
         return view('admin.posts.create',compact('posts'));*/
-        return view('admin.posts.create');
+        $categories=Category::lists('name','id')->all();
+        return view('admin.posts.create',compact('categories'));
     }
 
     /**
