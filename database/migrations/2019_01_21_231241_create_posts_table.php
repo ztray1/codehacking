@@ -12,6 +12,9 @@ class CreatePostsTable extends Migration
      */
     public function up()
     {
+        Schema::table('posts', function(Blueprint $table){
+            $table->string('slug')->nullable();
+        });
         Schema::create('posts', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('user_id')->unsigned()->index();
@@ -31,6 +34,10 @@ class CreatePostsTable extends Migration
      */
     public function down()
     {
+        Schema::table('posts', function(Blueprint $table){
+            $table->dropColumn('slug');
+        });
         Schema::drop('posts');
+
     }
 }

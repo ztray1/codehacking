@@ -21,7 +21,7 @@ class AdminPostsController extends Controller
     public function index()
     {
         //
-        $posts=Post::all();
+        $posts=Post::paginate(2);
         return view('admin.posts.index',compact('posts'));
     }
 
@@ -35,7 +35,7 @@ class AdminPostsController extends Controller
         //
         /*$posts=Post::lists('name','id')->all();
         return view('admin.posts.create',compact('posts'));*/
-        $categories=Category::lists('name','id')->all();
+        $categories=Category::pluck('name','id')->all();
         return view('admin.posts.create',compact('categories'));
     }
 
@@ -49,6 +49,7 @@ class AdminPostsController extends Controller
     {
         //
         $input=$request->all();
+        $title=str_slug($request->title,'-');
         $user=Auth::user();
         if($file=$request->file('photo_id')){
             $name=time().$file->getClientOriginalName();
@@ -81,7 +82,7 @@ class AdminPostsController extends Controller
     {
         //
         $post=Post::findOrFail($id);
-        $categories=Category::lists('name','id')->all();
+        $categories=Category::pluck('name','id')->all();
         return view('admin.posts.edit',compact('post','categories'));
     }
 
@@ -120,5 +121,10 @@ class AdminPostsController extends Controller
         unlink(public_path().$post->photo->file);
         $post->delete();
         return view('admin.posts');
+    }
+    public function post($slug){
+        $post=Post::findBySlugOrFail($slug);
+        $comments=$post->comments()->whereIsActive(1)->get();
+        return view('post',compact('post','comments'));
     }
 }
